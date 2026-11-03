@@ -1,4 +1,37 @@
+# Local tooling
 .claude/
 .vercel/
+.vscode/
+.idea/
+
+# Secrets and credentials (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+secrets.*
+credentials.*
+
+# Dependencies and build output
+node_modules/
+dist/
+build/
+.cache/
+
+# Logs and temp files
+*.log
+npm-debug.log*
+*.tmp
+*.swp
+*~
+
+# OS files
 .DS_Store
 Thumbs.db
+desktop.ini
