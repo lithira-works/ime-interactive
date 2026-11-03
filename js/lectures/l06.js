@@ -64,7 +64,7 @@ addLecture({
     <h3>Advantages of being an entrepreneur</h3>
     <p class="wide" style="line-height:2.1">
       ${[["Independence", 1.6], ["Achievement", 1.45], ["Satisfaction", 1.3], ["Confidence", 1.3], ["Recognition", 1.15], ["Learning", 1.15], ["Freedom", 1.05], ["Financial independence", 1], ["Personal growth", 1], ["Personal satisfaction", .95], ["Respect", .9], ["Network", .9], ["Creativity", .9], ["Flexible time", .85], ["Work-life balance", .85], ["Customer satisfaction", .85], ["Providing employment", .85], ["Be my own boss", .85]]
-        .map(([w, s]) => `<span style="font:800 ${s}rem var(--display);margin-right:.7em;color:${s > 1.2 ? "var(--lec)" : "var(--ink-2)"}">${w}</span>`).join("")}
+        .map(([w, s]) => `<span style="font:800 ${s}rem var(--display);margin-right:.7em;color:${s > 1.2 ? "var(--lec)" : "var(--ink-2)"}">${w}</span>`).join(" ")}
     </p>
   `) +
   chapter("l06-skills", "Skills of an innovative entrepreneur", `
