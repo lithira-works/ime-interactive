@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="description" content="Venture Notes: an interactive study companion for innovation management and entrepreneurship.">
+<meta name="theme-color" content="#F4F6F5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121A1C" media="(prefers-color-scheme: dark)">
+<title>Innovation Management &amp; Entrepreneurship</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-cards" viewBox="0 0 24 24"><rect x="3" y="7" width="14" height="14" rx="2"/><path d="M7 3h12a2 2 0 0 1 2 2v12"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+    <symbol id="i-sheet" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 22c4 0 7-3 7-7 0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-2 2-5 5-5 8 0 4 3 7 7 7z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Open lecture list" aria-expanded="false" aria-controls="sidebar"><svg class="i" aria-hidden="true"><use href="#i-menu"></use></svg></button>
+  <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true"></span>Venture&nbsp;Notes</a>
+  <nav class="topnav" aria-label="Main">
+    <a href="#home" data-page="home"><svg class="i" aria-hidden="true"><use href="#i-home"></use></svg><span>Home</span></a>
+    <a href="#review" data-page="review"><svg class="i" aria-hidden="true"><use href="#i-cards"></use></svg><span>Review</span><b class="badge" id="dueBadge" hidden>0</b></a>
+    <a href="#exam" data-page="exam"><svg class="i" aria-hidden="true"><use href="#i-target"></use></svg><span>Exam</span></a>
+    <a href="#sheet" data-page="sheet"><svg class="i" aria-hidden="true"><use href="#i-sheet"></use></svg><span>Revision</span></a>
+  </nav>
+  <button class="icon-btn" id="themeBtn" aria-label="Switch to dark mode"><svg class="i" aria-hidden="true"><use href="#i-moon"></use></svg></button>
+  <div class="read-bar" aria-hidden="true"><i id="readBar"></i></div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar" aria-label="Lectures">
+    <div class="side-head"><span>Lectures</span><button class="icon-btn close-btn" id="closeSide" aria-label="Close lecture list"><svg class="i" aria-hidden="true"><use href="#i-x"></use></svg></button></div>
+    <ol class="lec-list" id="lecList"></ol>
+    <div class="side-foot"><div class="meter"><i id="sideBar"></i></div><span id="sideLbl">0% of the course</span></div>
+  </aside>
+  <div class="scrim" id="scrim" hidden></div>
+
+  <main id="main" tabindex="-1">
+
+    <!-- HOME -->
+    <section class="page" id="home" aria-labelledby="home-title">
+      <div class="hero">
+        <p class="eyebrow">Innovation management &amp; entrepreneurship</p>
+        <h1 id="home-title">From a spark of an idea to a <mark>working venture</mark>.</h1>
+        <p class="lead">Eleven lectures, retold as short chapters with diagrams, practice tools and quick checks. Follow the path below in order, or jump to what your exam needs.</p>
+        <div class="journey" id="journey" aria-label="Course path"></div>
+      </div>
+      <div class="dash" id="dash"></div>
+      <h2 class="section-title">All lectures</h2>
+      <div class="lec-grid" id="lecGrid"></div>
+      <h2 class="section-title">How each lecture works</h2>
+      <ol class="how">
+        <li><b>Read</b> a short chapter. Key terms are <mark>highlighted</mark>; definitions and memory hooks sit beside the text.</li>
+        <li><b>Try it</b> with the diagram, sorter or calculator in the chapter.</li>
+        <li><b>Mark it learned</b> and move to the next chapter.</li>
+        <li><b>Check yourself</b> with the quiz, then let flashcards come back over the next days.</li>
+      </ol>
+    </section>
+
+    <!-- LECTURES (filled by js/lectures/*.js) -->
+    <div id="lectures"></div>
+
+    <!-- REVIEW -->
+    <section class="page" id="review" aria-labelledby="review-title">
+      <header class="lec-head plain">
+        <p class="eyebrow">Spaced repetition</p>
+        <h1 id="review-title">Daily review</h1>
+        <p class="lead">Cards you rate come back just before you would forget them: <b>Again</b> brings a card back today, <b>Got it</b> pushes it to 1, 3, 7, 14, then 30 days.</p>
+        <div class="chips" id="reviewPick" role="group" aria-label="Choose cards"></div>
+      </header>
+      <div class="boxes" id="srsBoxes"></div>
+      <div class="deck" data-deck="review"></div>
+      <p class="hint center">Keyboard: <kbd>Space</kbd> flip · <kbd>K</kbd> got it · <kbd>A</kbd> again · <kbd>←</kbd> <kbd>→</kbd> move</p>
+    </section>
+
+    <!-- EXAM -->
+    <section class="page" id="exam" aria-labelledby="exam-title">
+      <header class="lec-head plain">
+        <p class="eyebrow">All lectures</p>
+        <h1 id="exam-title">Exam practice</h1>
+        <p class="lead">Twenty-five mixed questions, each with the reason behind the answer. Pick lectures to narrow it down, or practise only the questions you have missed before.</p>
+        <div class="chips" id="examPick" role="group" aria-label="Choose lectures"></div>
+      </header>
+      <div class="quiz" data-quiz="all"></div>
+      <p class="hint center">Keyboard: <kbd>1</kbd>–<kbd>4</kbd> to answer · <kbd>Enter</kbd> for the next question</p>
+    </section>
+
+    <!-- REVISION SHEET -->
+    <section class="page" id="sheet" aria-labelledby="sheet-title">
+      <header class="lec-head plain">
+        <p class="eyebrow">Last-minute revision</p>
+        <h1 id="sheet-title">Revision sheet</h1>
+        <p class="lead">Every lecture on one page, plus all the memory hooks and exam traps collected in one place.</p>
+        <div class="tabs" role="tablist" id="sheetTabs">
+          <button role="tab" aria-selected="true" data-st="sheet">Summary</button>
+          <button role="tab" aria-selected="false" data-st="hook">Memory hooks</button>
+          <button role="tab" aria-selected="false" data-st="trap">Exam traps</button>
+        </div>
+      </header>
+      <div class="sheet-grid" id="sheet-grid"></div>
+      <div id="sheetAlt" hidden></div>
+    </section>
+  </main>
+</div>
+
+<footer class="footer">
+  <p class="copy">© <span id="year">2026</span> Lithira Silva (li.kkaa). All rights reserved.</p>
+  <p>Original lecture material belongs to its respective authors. This site is a personal study aid.</p>
+</footer>
+
+<button class="to-top icon-btn" id="toTop" aria-label="Back to top"><svg class="i" aria-hidden="true"><use href="#i-up"></use></svg></button>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="js/data.js"></script>
+<script src="js/lectures/l01.js"></script>
+<script src="js/lectures/l02.js"></script>
+<script src="js/lectures/l03.js"></script>
+<script src="js/lectures/l04.js"></script>
+<script src="js/lectures/l05.js"></script>
+<script src="js/lectures/l06.js"></script>
+<script src="js/lectures/l07.js"></script>
+<script src="js/lectures/l08.js"></script>
+<script src="js/lectures/l09.js"></script>
+<script src="js/lectures/l10.js"></script>
+<script src="js/lectures/l11.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
