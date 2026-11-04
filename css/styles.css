@@ -517,3 +517,5 @@ button.cell:hover { border-color: var(--lec); }
   .layout { display: block; }
   .page { display: block !important; }
 }
+
+.quiz { scroll-margin-top: 76px; }

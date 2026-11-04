@@ -270,48 +270,65 @@ Object.keys(wrong).forEach(k => { if (!QID[k]) delete wrong[k]; });
 let examSet = new Set(LIDS), examMistakes = false;
 function makeQuiz(el) {
   const key = el.dataset.quiz;
-  let qs, i, score, missed;
+  // picked[n] keeps the chosen answer and option order, so answered questions can be reopened read-only
+  let qs, i, score, missed, picked, finished;
+  function begin(list) { qs = list; i = 0; score = 0; missed = []; picked = []; finished = false; show(); }
   function start() {
     let pool = key === "all" ? [...examSet].flatMap(k => QUIZ[k] || []) : QUIZ[key] || [];
     if (key === "all" && examMistakes) pool = Object.keys(wrong).map(id => QID[id]).filter(Boolean);
     if (!pool.length) { el.innerHTML = `<div class="result"><p class="big">0</p><p>No missed questions to practise. Pick lectures above instead.</p></div>`; return; }
-    qs = shuffle(pool).slice(0, key === "all" ? 25 : pool.length); i = 0; score = 0; missed = []; show();
+    begin(shuffle(pool).slice(0, key === "all" ? 25 : pool.length));
   }
   el.restart = start;
+  function results() {
+    finished = true;
+    const pct = Math.round(score / qs.length * 100);
+    const best = store.get("best", {}); const prev = Number(best[key]) || 0; best[key] = Math.max(prev, pct); store.set("best", best);
+    const misses = qs.map((q, n) => ({ q, mine: picked[n].k })).filter(x => x.mine !== x.q.a);
+    el.innerHTML = `<div class="result"><p class="big">${pct}%</p><p>${score} of ${qs.length} correct · best ${best[key]}%</p>
+      <p>${pct >= 80 ? "Exam ready on this set." : pct >= 50 ? "Solid start. Go through the misses below, then retry." : "Reread the chapters and their margin notes, then retry."}</p>
+      <div class="row" style="justify-content:center"><button class="btn" data-review>${icon("left")} Review all my answers</button><button class="btn ghost" data-again>${icon("rotate")} Try again</button>${missed.length ? `<button class="btn ghost" data-redo>Retry the ${missed.length} I missed</button>` : ""}</div></div>
+      ${misses.length ? `<div class="mistakes"><h3>What you missed</h3>${misses.map(({ q, mine }) => `<div class="mk"><b>${q.q}</b><small>Your answer: ${q.o[mine]}</small><span>${q.o[q.a]}</span><small>${q.why}</small></div>`).join("")}</div>` : ""}`;
+    $("[data-review]", el).onclick = () => { i = 0; show(); el.scrollIntoView({ behavior: smooth() }); };
+    $("[data-again]", el).onclick = start;
+    if (missed.length) $("[data-redo]", el).onclick = () => begin(shuffle(missed));
+  }
   function show() {
-    if (i >= qs.length) {
-      const pct = Math.round(score / qs.length * 100);
-      const best = store.get("best", {}); const prev = Number(best[key]) || 0; best[key] = Math.max(prev, pct); store.set("best", best);
-      el.innerHTML = `<div class="result"><p class="big">${pct}%</p><p>${score} of ${qs.length} correct · best ${best[key]}%</p>
-        <p>${pct >= 80 ? "Exam ready on this set." : pct >= 50 ? "Solid start. Go through the misses below, then retry." : "Reread the chapters and their margin notes, then retry."}</p>
-        <div class="row" style="justify-content:center"><button class="btn" data-again>${icon("rotate")} Try again</button>${missed.length ? `<button class="btn ghost" data-redo>Retry the ${missed.length} I missed</button>` : ""}</div></div>
-        ${missed.length ? `<div class="mistakes"><h3>What you missed</h3>${missed.map(q => `<div class="mk"><b>${q.q}</b><span>${q.o[q.a]}</span><small>${q.why}</small></div>`).join("")}</div>` : ""}`;
-      $("[data-again]", el).onclick = start;
-      if (missed.length) $("[data-redo]", el).onclick = () => { qs = shuffle(missed); i = 0; score = 0; missed = []; show(); };
-      return;
-    }
-    const q = qs[i], order = shuffle(q.o.map((t, k) => ({ t, k })));
-    const L = LECTURES.find(l => l.id === q.l);
-    el.innerHTML = `<div class="qtop"><span>Question ${i + 1} of ${qs.length}${key === "all" ? ` · Lecture ${L.n}` : ""}</span><span>Score ${score}</span></div>
+    if (i >= qs.length) return results();
+    const q = qs[i], seen = picked[i], order = seen ? seen.order : shuffle(q.o.map((t, k) => ({ t, k })));
+    const L = LECTURES.find(l => l.id === q.l), last = i === qs.length - 1;
+    el.innerHTML = `<div class="qtop"><span>Question ${i + 1} of ${qs.length}${key === "all" ? ` · Lecture ${L.n}` : ""}${seen ? " · your answer" : ""}</span><span>Score ${score}</span></div>
       <div class="meter"><i style="width:${i / qs.length * 100}%"></i></div>
       <p class="q">${q.q}</p><div class="ans" role="group" aria-label="Answers"></div><div class="why" hidden aria-live="polite"></div>
-      <div class="row" style="margin-top:14px"><button class="btn" disabled data-next>Next question ${icon("arrow")}</button></div>`;
+      <div class="row" style="margin-top:14px"><button class="btn ghost" data-prev${i ? "" : " disabled"}>${icon("left")} Previous</button><button class="btn" disabled data-next>${last ? (finished ? "Back to results" : "See results") : "Next question"} ${icon("arrow")}</button>${finished && !last ? `<button class="btn ghost" data-results>Back to results</button>` : ""}</div>`;
     const ans = $(".ans", el);
+    const reveal = chosen => {
+      const ok = chosen === q.a;
+      $$("button", ans).forEach((x, n) => {
+        x.disabled = true;
+        if (order[n].k === q.a) x.classList.add("right");
+        else if (order[n].k === chosen) x.classList.add("wrong");
+      });
+      const w = $(".why", el); w.hidden = false; w.innerHTML = `<b>${ok ? "Correct." : "Not quite."}</b> ${q.why}`;
+      $("[data-next]", el).disabled = false;
+    };
     order.forEach(({ t, k }, n) => {
       const b = document.createElement("button"); b.type = "button"; b.innerHTML = `<kbd>${n + 1}</kbd><span>${t}</span>`;
       b.onclick = () => {
-        $$("button", ans).forEach(x => x.disabled = true);
+        picked[i] = { k, order };
         const ok = k === q.a; touch();
         if (ok) { score++; delete wrong[q.id]; } else { missed.push(q); wrong[q.id] = 1; }
         store.set("wrong", wrong); paintMistakes();
-        b.classList.add(ok ? "right" : "wrong");
-        $$("button", ans)[order.findIndex(o => o.k === q.a)].classList.add("right");
-        const w = $(".why", el); w.hidden = false; w.innerHTML = `<b>${ok ? "Correct." : "Not quite."}</b> ${q.why}`;
-        const nx = $("[data-next]", el); nx.disabled = false; nx.focus();
+        reveal(k);
+        $(".qtop span:last-child", el).textContent = `Score ${score}`;
+        $("[data-next]", el).focus();
       };
       ans.appendChild(b);
     });
-    $("[data-next]", el).onclick = () => { i++; show(); const f = $(".ans button", el); if (f) f.focus({ preventScroll: true }); };
+    if (seen) reveal(seen.k);
+    $("[data-prev]", el).onclick = () => { i--; show(); };
+    $("[data-next]", el).onclick = () => { i++; show(); const f = $(".ans button:not(:disabled)", el) || $("[data-next]", el); if (f) f.focus({ preventScroll: true }); };
+    const r = $("[data-results]", el); if (r) r.onclick = () => { i = qs.length; show(); };
   }
   start();
 }
@@ -467,6 +484,9 @@ document.addEventListener("keydown", e => {
   }
   const quiz = $$(".page.show [data-quiz]").find(inView);
   if (!quiz) return;
+  if (e.target.closest("[role=tab]")) return;
+  if (e.key === "ArrowLeft") { const p = $("[data-prev]", quiz); if (p && !p.disabled) p.click(); }
+  if (e.key === "ArrowRight") { const n = $("[data-next]", quiz); if (n && !n.disabled) n.click(); }
   if (/^[1-4]$/.test(e.key)) { const b = $$(".ans button", quiz)[+e.key - 1]; if (b && !b.disabled) b.click(); }
 });
 
